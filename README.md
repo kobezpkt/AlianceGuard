@@ -6,6 +6,7 @@ Plugin para integração do painel AllianceGuard com servidores SCP: Secret Labo
 ```
 https://alianceguard.apollospace.shop/
 ```
+** sim fiquei com preguiça de fazer um painel de login mais bonito:) **
 
 ## Funcionalidades
 
