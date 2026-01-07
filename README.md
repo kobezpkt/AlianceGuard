@@ -3,9 +3,9 @@
 Plugin para integração do painel AllianceGuard com servidores SCP: Secret Laboratory usando EXILED.
 
 ## Link do painel:
-```
-https://alianceguard.apollospace.shop/
-```
+
+[https://alianceguard.apollospace.shop/](https://alianceguard.apollospace.shop/)
+
 **sim fiquei com preguiça de fazer um painel de login mais bonito:)**
 
 ## Funcionalidades
