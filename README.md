@@ -46,3 +46,4 @@ Para reportar bugs ou solicitar funcionalidades, abra um ticket em nosso discord
 https://discord.com/invite/eA8JusX8tq
 
 ```
+(Ou clique [aqui!](https://discord.com/invite/eA8JusX8tq))
