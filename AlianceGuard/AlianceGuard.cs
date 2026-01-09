@@ -13,7 +13,6 @@ public class AlianceGuard : Plugin<Config>
     public override string Name => "AlianceGuard";
     public override string Author => "kobezpkt";
     public override Version Version => new(1, 0, 0);
-    public override Version RequiredExiledVersion => new(8, 0, 0);
 
     private static readonly HttpClient httpClient = new();
 
@@ -104,16 +103,16 @@ public class AlianceGuard : Plugin<Config>
         string altAccountText = banInfo.IsAltAccount ? " (Conta Alternativa)" : "";
 
         return $"<color=white><b>.</b></color>\n\n" +
-               $"<color=red><b>AlianceGuard</b></color>\n\n" +
-               $"<color=red>Seu SteamID64 foi encontrado em nossa Database com uma violação extremamente seria.</color>\n\n" +
+               $"<color=red><b>AlianceGuard</b></color>\n" +
+               $"<color=red>Seu SteamID64 foi encontrado em nossa Database com uma violação extremamente seria.</color>\n" +
                $"<color=white>Jogador:</color> <color=white>{banInfo.Player.Username}</color>\n" +
-               $"<color=white>Steam ID:</color> <color=white>{banInfo.Player.SteamId}</color>{altAccountText}\n\n" +
+               $"<color=white>Steam ID:</color> <color=white>{banInfo.Player.SteamId}</color>{altAccountText}\n" +
                $"<color=red>MOTIVO:</color>\n" +
-               $"<color=white>{banInfo.Player.Reason}</color>\n\n" +
+               $"<color=white>{banInfo.Player.Reason}</color>\n" +
                $"<color=yellow>Severidade:</color> <color=white>{GetSeverityText(banInfo.Player.Severity)}</color>\n" +
-               $"<color=yellow>Adicionado por:</color> <color=white>{banInfo.Player.AddedBy}</color>\n\n" +
-               $"<color=yellow>Caso ache que isso e um erro, entre em contato com o nosso suporte no discord:</color>\n\n" +
-               $"<color=white>https://discord.gg/eA8JusX8tq</color>\n\n";
+               $"<color=yellow>Adicionado por:</color> <color=white>{banInfo.Player.AddedBy}</color>\n" +
+               $"<color=yellow>Caso ache que isso e um erro, entre em contato com o nosso suporte no discord:</color>\n" +
+               $"<color=white>https://discord.gg/eA8JusX8tq</color>\n";
     }
 
     private string GetSeverityText(string severity)
