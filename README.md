@@ -4,7 +4,7 @@ Plugin para integração do painel AllianceGuard com servidores SCP: Secret Labo
 
 ## Link do painel:
 
-[https://alianceguard.apollospace.shop/](https://alianceguard.apollospace.shop/)
+[https://alianceguard.com/](https://alianceguard.com/)
 
 **sim fiquei com preguiça de fazer um painel de login mais bonito:)**
 
@@ -27,7 +27,7 @@ Plugin para integração do painel AllianceGuard com servidores SCP: Secret Labo
 ## Como Funciona
 
 1. Quando um jogador entra no servidor, o plugin captura seu SteamID64 imediatamente
-2. O plugin faz uma requisição GET para a API do painel
+2. O plugin faz uma requisição para a API do painel
 3. A API verifica se o SteamID64 está na lista de infratores ou em contas alternativas
 4. Se encontrado, o plugin expulsa o jogador instantaneamente com uma mensagem formatada mostrando o motivo
 
