@@ -13,7 +13,7 @@ namespace AlianceGuard
     {
         public override string Name => "AlianceGuard";
         public override string Author => "kobezpkt";
-        public override Version Version => new Version(1, 1, 0);
+        public override Version Version => new Version(1, 0, 1);
 
         private static readonly HttpClient HttpClient = new HttpClient();
         private WebhookService _webhookService;
@@ -205,3 +205,4 @@ namespace AlianceGuard
         #endregion
     }
 }
+
