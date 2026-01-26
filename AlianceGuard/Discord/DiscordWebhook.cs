@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace AlianceGuard.Dtos.Discord
+namespace AlianceGuard.Discord
 {
     public class DiscordWebhook
     {

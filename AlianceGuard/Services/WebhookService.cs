@@ -1,5 +1,4 @@
-﻿using AlianceGuard.Dtos.Discord;
-using Exiled.API.Features;
+﻿using Exiled.API.Features;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -57,13 +56,13 @@ namespace AlianceGuard.Services
                    webhookUri.Host.EndsWith("discordapp.com");
         }
 
-        private DiscordWebhook BuildBannedPlayerWebhook(Player player, BanCheckResponse banInfo, string steamId)
+        private Discord.DiscordWebhook BuildBannedPlayerWebhook(Player player, BanCheckResponse banInfo, string steamId)
         {
             int embedColor = ParseEmbedColor(_config.WebhookEmbedColor);
             string accountType = banInfo.IsAltAccount ? "Conta Alternativa (ALT)" : "Conta Principal";
             string accountEmoji = banInfo.IsAltAccount ? ":warning:" : ":bust_in_silhouette:";
 
-            var fields = new List<DiscordEmbedField>
+            var fields = new List<Discord.DiscordEmbedField>
             {
                 CreateField(":video_game: Nome no Jogo", $"`{player.Nickname}`", true),
                 CreateField(":label: Username Steam", $"`{banInfo.Player.Username}`", true),
@@ -75,32 +74,32 @@ namespace AlianceGuard.Services
                 CreateField(":link: Links Uteis", $"[Steam Profile](https://steamcommunity.com/profiles/{steamId}) | [SteamID.io](https://steamid.io/lookup/{steamId})", false)
             };
 
-            var embed = new DiscordEmbed
+            var embed = new Discord.DiscordEmbed
             {
                 Title = ":rotating_light: Ban alert!",
                 Description = $"Um jogador registrado na database do AlianceGuard tentou entrar no servidor.",
                 Color = embedColor,
                 Fields = fields,
-                Footer = new DiscordEmbedFooter
+                Footer = new Discord.DiscordEmbedFooter
                 {
                     Text = $"AlianceGuard v{_pluginVersion}",
                     IconUrl = "https://i.imgur.com/zVZv6ar.png"
                 },
                 Timestamp = DateTime.UtcNow.ToString("o"),
-                Thumbnail = new DiscordEmbedThumbnail
+                Thumbnail = new Discord.DiscordEmbedThumbnail
                 {
                     Url = $"https://avatars.cloudflare.steamstatic.com/{steamId}_full.jpg"
                 }
             };
 
-            return new DiscordWebhook
+            return new Discord.DiscordWebhook
             {
                 Content = string.IsNullOrWhiteSpace(_config.WebhookMentionRole) ? null : _config.WebhookMentionRole,
-                Embeds = new List<DiscordEmbed> { embed }
+                Embeds = new List<Discord.DiscordEmbed> { embed }
             };
         }
 
-        private async Task SendWebhookAsync(DiscordWebhook webhook)
+        private async Task SendWebhookAsync(Discord.DiscordWebhook webhook)
         {
             string jsonPayload = JsonConvert.SerializeObject(webhook, new JsonSerializerSettings
             {
@@ -135,9 +134,9 @@ namespace AlianceGuard.Services
             }
         }
 
-        private DiscordEmbedField CreateField(string name, string value, bool inline)
+        private Discord.DiscordEmbedField CreateField(string name, string value, bool inline)
         {
-            return new DiscordEmbedField
+            return new Discord.DiscordEmbedField
             {
                 Name = name,
                 Value = value,
