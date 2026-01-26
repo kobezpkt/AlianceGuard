@@ -1,3 +1,10 @@
 <Solution>
-  <Project Path="AlianceGuard2/AlianceGuard2.csproj" Id="e04bd85f-d863-4790-b3d2-9fb3080a66f7" />
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="AlianceGuard/AlianceGuard.csproj">
+    <Platform Project="x64" />
+  </Project>
 </Solution>
