@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace AlianceGuard.Services
 {
     /// serviço q envia notificações via webhook (pfv n mexer pq fiquei 2h so arrumando isso)
+    /// Arrumei, pega essa - MMDDKK
     public class WebhookService
     {
         private readonly HttpClient _httpClient;

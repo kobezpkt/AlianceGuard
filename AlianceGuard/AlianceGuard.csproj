@@ -15,10 +15,6 @@
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Configurations>Debug;Release</Configurations>
 	</PropertyGroup>
-  
-  <ItemGroup>
-    <Compile Remove="*.yml" />
-  </ItemGroup>
 
 	<ItemGroup>
 		<Reference Include="System.Net.Http" />
