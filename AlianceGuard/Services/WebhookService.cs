@@ -26,7 +26,7 @@ namespace AlianceGuard.Services
 
             if (!ValidateWebhookUrl(_config.WebhookUrl))
             {
-                LogDebug("URL da wehook invalida ou nao e uma webhook do Discord");
+                LogDebug("URL da webhook invalida ou nao e uma webhook do Discord");
                 return;
             }
 
