@@ -1,4 +1,5 @@
-﻿using Exiled.API.Features;
+﻿using AlianceGuard.AlianceAPI;
+using Exiled.API.Features;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,18 +12,12 @@ namespace AlianceGuard.Services
 {
     /// serviço q envia notificações via webhook (pfv n mexer pq fiquei 2h so arrumando isso)
     /// Arrumei, pega essa - MMDDKK
-    public class WebhookService
+    /// Tira o MMDDKK como dev esse mano n sabe deixar bonitinho as coisas (contem ironia)
+    public class WebhookService(HttpClient httpClient, Config config, Version pluginVersion)
     {
-        private readonly HttpClient _httpClient;
-        private readonly Config _config;
-        private readonly Version _pluginVersion;
-
-        public WebhookService(HttpClient httpClient, Config config, Version pluginVersion)
-        {
-            _httpClient = httpClient;
-            _config = config;
-            _pluginVersion = pluginVersion;
-        }
+        private readonly HttpClient _httpClient = httpClient;
+        private readonly Config _config = config;
+        private readonly Version _pluginVersion = pluginVersion;
 
         public async Task SendBannedPlayerAlertAsync(Player player, BanCheckResponse banInfo, string steamId)
         {
@@ -31,7 +26,7 @@ namespace AlianceGuard.Services
 
             if (!ValidateWebhookUrl(_config.WebhookUrl))
             {
-                LogDebug("URL da webhook invalida ou nao e uma webhook do Discord");
+                LogDebug("URL da wehook invalida ou nao e uma webhook do Discord");
                 return;
             }
 
@@ -49,8 +44,7 @@ namespace AlianceGuard.Services
         }
         private bool ValidateWebhookUrl(string url)
         {
-            Uri webhookUri;
-            if (!Uri.TryCreate(url, UriKind.Absolute, out webhookUri))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri webhookUri))
                 return false;
 
             return webhookUri.Host.EndsWith("discord.com") ||
@@ -96,7 +90,7 @@ namespace AlianceGuard.Services
             return new Discord.DiscordWebhook
             {
                 Content = string.IsNullOrWhiteSpace(_config.WebhookMentionRole) ? null : _config.WebhookMentionRole,
-                Embeds = new List<Discord.DiscordEmbed> { embed }
+                Embeds = [embed]
             };
         }
 
@@ -147,25 +141,19 @@ namespace AlianceGuard.Services
 
         private string FormatSeverity(string severity)
         {
-            switch (severity)
+            return severity switch
             {
-                case "low":
-                    return "Baixa";
-                case "medium":
-                    return "Media";
-                case "high":
-                    return "Alta!!";
-                case "critical":
-                    return "CRITICA!!!";
-                default:
-                    return "Desconhecida";
-            }
+                "low" => "Baixa",
+                "medium" => "Media",
+                "high" => "Alta!!",
+                "critical" => "CRITICA!!!",
+                _ => "Desconhecida",
+            };
         }
 
         private void LogDebug(string message)
         {
-            if (_config.Debug)
-                Log.Debug(message);
+            Log.Debug(message);
         }
     }
 }
