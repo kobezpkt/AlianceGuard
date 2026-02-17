@@ -27,7 +27,7 @@ public class AlianceGuard : Plugin<Config>
 
         _webhookService = new WebhookService(HttpClient, Config, Version);
         ///Isso aqui me decepciona
-        _updateService = new UpdateService(HttpClient, Version, Config.Debug);
+        _updateService = new UpdateService(HttpClient, Version);
 
         _updateService.InstallPendingUpdate();
 
