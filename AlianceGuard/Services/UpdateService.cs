@@ -11,18 +11,16 @@ public class UpdateService
 {
     private readonly HttpClient _httpClient;
     private readonly Version _currentVersion;
-    private readonly bool _debug;
 
     private const string GitHubApiUrl = "https://api.github.com/repos/kobezpkt/AlianceGuard/releases/latest";
     private const string PluginFileName = "AlianceGuard.dll";
 
     ///Muitos Errors eram Debugs, Kobe por favor fale com a gente antes de fazer crimes de guerra
 
-    public UpdateService(HttpClient httpClient, Version currentVersion, bool debug)
+    public UpdateService(HttpClient httpClient, Version currentVersion)
     {
         _httpClient = httpClient;
         _currentVersion = currentVersion;
-        _debug = debug;
 
         if (!_httpClient.DefaultRequestHeaders.Contains("User-Agent"))
         {
