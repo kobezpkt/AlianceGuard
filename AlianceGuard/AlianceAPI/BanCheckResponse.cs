@@ -1,17 +1,16 @@
 ﻿using Newtonsoft.Json;
 
-namespace AlianceGuard
+namespace AlianceGuard.AlianceAPI;
+
+// para deserialização da resposta da API
+public class BanCheckResponse
 {
-    // para deserialização da resposta da API
-    public class BanCheckResponse
-    {
-        [JsonProperty("isBanned")]
-        public bool IsBanned { get; set; }
+    [JsonProperty("isBanned")]
+    public bool IsBanned { get; set; }
 
-        [JsonProperty("isAltAccount")]
-        public bool IsAltAccount { get; set; }
+    [JsonProperty("isAltAccount")]
+    public bool IsAltAccount { get; set; }
 
-        [JsonProperty("player")]
-        public PlayerBanInfo Player { get; set; }
-    }
+    [JsonProperty("player")]
+    public PlayerBanInfo Player { get; set; }
 }
