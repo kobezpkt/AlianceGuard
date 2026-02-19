@@ -6,5 +6,4 @@ public class DiscordEmbedThumbnail
 {
     [JsonProperty("url")]
     public string Url { get; set; }
-
-}   
+}

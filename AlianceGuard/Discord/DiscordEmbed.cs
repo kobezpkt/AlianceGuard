@@ -15,7 +15,7 @@ public class DiscordEmbed
     public int Color { get; set; }
 
     [JsonProperty("fields")]
-    public List<DiscordEmbedField> Fields { get; set; } = [];
+    public List<DiscordEmbedField> Fields { get; set; } = new List<DiscordEmbedField>();
 
     [JsonProperty("footer")]
     public DiscordEmbedFooter Footer { get; set; }

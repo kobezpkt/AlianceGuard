@@ -1,4 +1,5 @@
 ﻿using AlianceGuard.AlianceAPI;
+using AlianceGuard.AlianceAPI.ConnectionResponse;
 using Exiled.API.Features;
 using Newtonsoft.Json;
 using System;
@@ -10,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace AlianceGuard.Services;
 
-/// serviço q envia notificações via webhook (pfv n mexer pq fiquei 2h so arrumando isso)
-/// Arrumei, pega essa - MMDDKK
-/// Tira o MMDDKK como dev esse mano n sabe deixar bonitinho as coisas (contem ironia)
+ 
+   /// serviço q envia notificações via webhook (pfv n mexer pq fiquei 2h so arrumando isso)
+  /// Arrumei, pega essa - MMDDKK
+ 
 public class WebhookService(HttpClient httpClient, Config config, Version pluginVersion)
 {
     private readonly HttpClient _httpClient = httpClient;
@@ -34,27 +36,66 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
         {
             var webhook = BuildBannedPlayerWebhook(player, banInfo, steamId);
             await SendWebhookAsync(webhook);
-
+            
             LogDebug($"Webhook enviada com sucesso para jogador banido: {player.Nickname}");
         }
         catch (Exception ex)
         {
             LogDebug($"Erro ao enviar webhook: {ex.Message}");
         }
-    }
+    }    
+
+    public async Task SendAltDetectionAlertAsync(PlayerConnectionResponse connectionResult)
+    {
+        if (!connectionResult.AltDetected || string.IsNullOrEmpty(connectionResult.DetectionUuid))
+            return;
+
+        try
+        {
+            string apiUrl = $"https://aliance.owlrpg.com/api/exiled/send-detection-webhook";
+            
+            var payload = new
+            {
+                detection_uuid = connectionResult.DetectionUuid
+            };
+            
+            var content = new StringContent(
+                JsonConvert.SerializeObject(payload),
+                Encoding.UTF8,
+                "application/json"
+            );          
+            
+            var response = await _httpClient.PostAsync(apiUrl, content);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                LogDebug($"Alerta de alt account enviado com sucesso. UUID: {connectionResult.DetectionUuid}");
+            }
+            else
+            {
+                LogDebug($"Erro ao enviar alerta de alt: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            LogDebug($"Erro ao enviar alerta de alt account: {ex.Message}");
+        }
+    }   
+     
     private bool ValidateWebhookUrl(string url)
     {
-        if (!Uri.TryCreate(url, UriKind.Absolute, out Uri webhookUri))
+        Uri webhookUri;
+        if (!Uri.TryCreate(url, UriKind.Absolute, out webhookUri))
             return false;
 
-        return webhookUri.Host.EndsWith("discord.com") ||
+        return webhookUri.Host.EndsWith("discord.com") || 
                webhookUri.Host.EndsWith("discordapp.com");
     }
-
+    
     private Discord.DiscordWebhook BuildBannedPlayerWebhook(Player player, BanCheckResponse banInfo, string steamId)
     {
         int embedColor = ParseEmbedColor(_config.WebhookEmbedColor);
-        string accountType = banInfo.IsAltAccount ? "Conta Alternativa (ALT)" : "Conta Principal";
+        string accountType = banInfo.IsAltAccount ? "ALT" : "Conta Principal";
         string accountEmoji = banInfo.IsAltAccount ? ":warning:" : ":bust_in_silhouette:";
 
         var fields = new List<Discord.DiscordEmbedField>
@@ -72,7 +113,7 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
         var embed = new Discord.DiscordEmbed
         {
             Title = ":rotating_light: Ban alert!",
-            Description = $"Um jogador registrado na database do AlianceGuard tentou entrar no servidor.",
+            Description = $"Um jogador registrado no AlianceGuard tentou entrar no servidor mas e foi bloqueado automaticamente.",
             Color = embedColor,
             Fields = fields,
             Footer = new Discord.DiscordEmbedFooter
@@ -89,10 +130,10 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
 
         return new Discord.DiscordWebhook
         {
-            Content = string.IsNullOrWhiteSpace(_config.WebhookMentionRole) ? null : _config.WebhookMentionRole,
             Embeds = [embed]
         };
     }
+
 
     private async Task SendWebhookAsync(Discord.DiscordWebhook webhook)
     {
@@ -110,10 +151,10 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
             LogDebug($"Erro ao enviar webhook: {response.StatusCode} - {errorContent}");
         }
     }
-
+  
     private int ParseEmbedColor(string hexColor)
     {
-        int defaultColor = 0xFF0000;
+        int defaultColor = 0xFF0000; // Vermelho 
 
         if (string.IsNullOrWhiteSpace(hexColor))
             return defaultColor;
@@ -128,7 +169,7 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
             return defaultColor;
         }
     }
-
+     
     private Discord.DiscordEmbedField CreateField(string name, string value, bool inline)
     {
         return new Discord.DiscordEmbedField
@@ -138,7 +179,7 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
             Inline = inline
         };
     }
-
+   
     private string FormatSeverity(string severity)
     {
         return severity switch
@@ -149,10 +190,12 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
             "critical" => "CRITICA!!!",
             _ => "Desconhecida",
         };
-    }
-
+    }    
+    /// loga a msg de debug apenas se debug estiver habilitado (vsfd edi)
+     
     private void LogDebug(string message)
     {
-        Log.Debug(message);
+        if (_config.Debug)
+            Log.Debug(message);
     }
 }

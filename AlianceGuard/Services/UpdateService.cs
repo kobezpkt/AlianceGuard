@@ -15,8 +15,6 @@ public class UpdateService
     private const string GitHubApiUrl = "https://api.github.com/repos/kobezpkt/AlianceGuard/releases/latest";
     private const string PluginFileName = "AlianceGuard.dll";
 
-    ///Muitos Errors eram Debugs, Kobe por favor fale com a gente antes de fazer crimes de guerra
-
     public UpdateService(HttpClient httpClient, Version currentVersion)
     {
         _httpClient = httpClient;
@@ -173,7 +171,7 @@ public class UpdateService
         }
         catch (Exception ex)
         {
-            Log.Error($"Erro ao instalar atualizacao: {ex.Message}");           
+            Log.Error($"Erro ao instalar atualizacao: {ex.Message}");
             Log.Debug($"Stack trace: {ex.StackTrace}");
         }
     }
