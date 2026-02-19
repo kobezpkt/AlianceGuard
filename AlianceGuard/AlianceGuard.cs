@@ -95,7 +95,6 @@ namespace AlianceGuard
             try
             {
                 var connectionResult = await RegisterPlayerConnectionAsync(player, steamId);
-                var banInfo = await FetchBanInfoAsync(steamId);
 
                 if (connectionResult != null)
                 {
@@ -106,6 +105,8 @@ namespace AlianceGuard
                 }
                 else
                 {
+                    var banInfo = await FetchBanInfoAsync(steamId);
+
                     if (banInfo != null && banInfo.IsBanned)
                     {
                         await HandleBannedPlayerAsync(player, banInfo, steamId);
