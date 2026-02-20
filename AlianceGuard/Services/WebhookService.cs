@@ -53,7 +53,7 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
 
         try
         {
-            string apiUrl = $"https://aliance.owlrpg.com/api/exiled/send-detection-webhook";
+            string apiUrl = $"";
             
             var payload = new
             {
@@ -200,3 +200,4 @@ public class WebhookService(HttpClient httpClient, Config config, Version plugin
             Log.Debug(message);
     }
 }
+
