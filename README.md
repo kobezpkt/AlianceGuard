@@ -39,4 +39,4 @@ Plugin para integração do painel AllianceGuard com servidores SCP: Secret Labo
 Para reportar bugs ou solicitar funcionalidades, abra um ticket em nosso discord:
 
 
- [https://discord.com/invite/eA8JusX8tq](https://discord.com/invite/eA8JusX8tq)]
+ [https://discord.com/invite/eA8JusX8tq](https://discord.com/invite/eA8JusX8tq)
