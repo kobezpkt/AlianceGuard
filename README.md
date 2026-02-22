@@ -1,6 +1,6 @@
 # AllianceGuard - Plugin EXILED para SCP:SL
 
-Plugin para integração do painel AllianceGuard com servidores SCP: Secret Laboratory usando EXILED.
+Plugin para Banimento e proteção contra pessoas inconvenientes na comunidade brasileira de SCP: Secret Laboratory usando EXILED.
 
 ## Link do painel:
 
