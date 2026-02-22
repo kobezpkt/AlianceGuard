@@ -6,15 +6,12 @@ Plugin para integração do painel AllianceGuard com servidores SCP: Secret Labo
 
 [https://alianceguard.com/](https://alianceguard.com/)
 
-**sim fiquei com preguiça de fazer um painel de login mais bonito:)**
 
 ## Funcionalidades
 
-- Verifica automaticamente o SteamID64 de cada jogador que entra no servidor
-- Consulta a API do painel para verificar se o jogador está banido
-- Expulsa automaticamente jogadores banidos com mensagem formatada em vermelho
+- Verifica automaticamente cada jogador que entra no servidore verifica se o jogador está banido
+- Expulsa automaticamente jogadores banidos e envia um log para uma webhook no discord
 - Detecta contas alternativas de jogadores banidos
-- Suporta verificação de contas Steam alternativas cadastradas no painel
 - Verificação instantânea sem intervalo de tempo (ao entrar no servidor)
 
 ## Instalação
@@ -26,24 +23,20 @@ Plugin para integração do painel AllianceGuard com servidores SCP: Secret Labo
 
 ## Como Funciona
 
-1. Quando um jogador entra no servidor, o plugin captura seu SteamID64 imediatamente
-2. O plugin faz uma requisição para a API do painel
-3. A API verifica se o SteamID64 está na lista de infratores ou em contas alternativas
-4. Se encontrado, o plugin expulsa o jogador instantaneamente com uma mensagem formatada mostrando o motivo
-
+1. Quando um jogador entra no servidor, o plugin verifica se ele esta banido no painel e caso esteja o jogador e automaticamente expulso do servidor.
+2. envia uma webhook para um canal no discord caso algum jogador tente entrar no servidor.
+3. detecta se e conta e uma possivel alt.
 
 
 ## Notas Importantes
 
 - A verificação é feita instantaneamente quando o jogador entra, não requer qualquer configuração adicional
-- O plugin verifica tanto o SteamID64 principal quanto contas alternativas cadastradas no painel
+- Os Banimentos so são feitos com um motivo valido e com provas
+- NÃO e qualquer pessoa q pode adicionar um jogador no painel
 
 ## Suporte
 
 Para reportar bugs ou solicitar funcionalidades, abra um ticket em nosso discord:
 
-```
-https://discord.com/invite/eA8JusX8tq
 
-```
-(Ou clique [aqui!](https://discord.com/invite/eA8JusX8tq))
+ [https://discord.com/invite/eA8JusX8tq](https://discord.com/invite/eA8JusX8tq)]
