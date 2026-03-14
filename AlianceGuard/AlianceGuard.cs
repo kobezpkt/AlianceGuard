@@ -37,7 +37,6 @@ namespace AlianceGuard
 
             InitializationTexts.ValidateConfiguration(Config);
 
-
             _heartbeatService.Start();
 
             if (Config.CheckForUpdates)
@@ -98,8 +97,15 @@ namespace AlianceGuard
 
             try
             {
-                var connectionResult = await RegisterPlayerConnectionAsync(player, steamId);
                 var banInfo = await FetchBanInfoAsync(steamId);
+
+                if (banInfo != null && (banInfo.IsBanned || banInfo.IsAltAccount))
+                {
+                    await HandleBannedPlayerAsync(player, banInfo, steamId);
+                    return;
+                }
+
+                var connectionResult = await RegisterPlayerConnectionAsync(player, steamId);
 
                 if (connectionResult != null)
                 {
@@ -112,13 +118,6 @@ namespace AlianceGuard
                     if (connectionResult.AltDetected)
                     {
                         await _webhookService.SendAltDetectionAlertAsync(connectionResult);
-                    }
-                }
-                else
-                {
-                    if (banInfo != null && banInfo.IsBanned)
-                    {
-                        await HandleBannedPlayerAsync(player, banInfo, steamId);
                     }
                 }
             }
