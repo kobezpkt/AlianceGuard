@@ -1,13 +1,14 @@
 ﻿using AlianceGuard.AlianceAPI;
-using AlianceGuard.AlianceAPI.ConnectionResponse;
 using AlianceGuard.Services;
 using AlianceGuard.StringTexts;
 using Exiled.API.Features;
 using Exiled.Events.EventArgs.Player;
 using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AlianceGuard
@@ -16,45 +17,54 @@ namespace AlianceGuard
     {
         public override string Name => "AlianceGuard";
         public override string Author => "kobezpkt";
-        public override Version Version => new(1, 0, 2);
+        public override string Prefix => "aliance_guard";
+        public override Version Version => new(1, 0, 3);
 
         private static readonly HttpClient HttpClient = new();
         private WebhookService _webhookService;
         private UpdateService _updateService;
+        private ServerHeartbeatService _heartbeatService;
+        private PanelAuthService _authService;
 
         public override void OnEnabled()
         {
             InitializationTexts.PrintBanner(Version, Author);
 
-
             _webhookService = new WebhookService(HttpClient, Config, Version);
             _updateService = new UpdateService(HttpClient, Version);
-
+            _heartbeatService = new ServerHeartbeatService(HttpClient, Version);
+            _authService = new PanelAuthService(HttpClient, Config, Prefix);
 
             _updateService.InstallPendingUpdate();
-
 
             Exiled.Events.Handlers.Player.Verified += OnPlayerVerified;
 
             InitializationTexts.ValidateConfiguration(Config);
 
+            _heartbeatService.Start();
+
+            // Autentica com o painel ao iniciar (restaura sessão do config se ainda válida)
+            Task.Run(() => _authService.EnsureAuthenticatedAsync());
 
             if (Config.CheckForUpdates)
-            {
                 CheckForUpdatesAsync();
-            }
 
-            Log.Info($"{Name} v{Version} habilitado!");
+            Log.Info($"{Name} v{Version} habilitado");
             base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
             Exiled.Events.Handlers.Player.Verified -= OnPlayerVerified;
+
+            _heartbeatService?.Stop();
+            _heartbeatService = null;
+
             _webhookService = null;
             _updateService = null;
+            _authService = null;
 
-            Log.Info($"{Name} v{Version} desabilitado!");
+            Log.Info($"{Name} v{Version} desabilitado");
             base.OnDisabled();
         }
 
@@ -66,10 +76,9 @@ namespace AlianceGuard
             }
             catch (Exception ex)
             {
-                Log.Error($"Erro ao verificar atualizacoes: {ex.Message}");
+                Log.Error($"erro ao verificar atualizacoes: {ex.Message}");
             }
         }
-
 
         private async void OnPlayerVerified(VerifiedEventArgs ev)
         {
@@ -79,7 +88,7 @@ namespace AlianceGuard
             }
             catch (Exception ex)
             {
-                Log.Error($"Erro ao verificar jogador {ev.Player.Nickname}: {ex}");
+                Log.Error($"erro ao verificar jogador {ev.Player.Nickname}: {ex.Message}");
             }
         }
 
@@ -94,96 +103,60 @@ namespace AlianceGuard
 
             try
             {
-                var connectionResult = await RegisterPlayerConnectionAsync(player, steamId);
-
-                if (connectionResult != null)
+                // Verifica ban geral primeiro
+                var banInfo = await FetchBanInfoAsync(steamId);
+                if (banInfo != null && (banInfo.IsBanned || banInfo.IsAltAccount))
                 {
-                    if (!connectionResult.IsBanned && connectionResult.AltDetected)
-                    {
-                        await _webhookService.SendAltDetectionAlertAsync(connectionResult);
-                    }
+                    await HandleBannedPlayerAsync(player, banInfo, steamId);
+                    return;
                 }
-                else
-                {
-                    var banInfo = await FetchBanInfoAsync(steamId);
 
-                    if (banInfo != null && banInfo.IsBanned)
-                    {
-                        await HandleBannedPlayerAsync(player, banInfo, steamId);
-                    }
+                // Registra conexão via endpoint autenticado com HMAC
+                var connectionResult = await _authService.RegisterPlayerConnectionAsync(player, steamId);
+                if (connectionResult == null)
+                    return;
+
+                if (connectionResult.IsBanned)
+                {
+                    await HandleBannedPlayerAsync(player, banInfo, steamId);
+                    return;
                 }
+
+                if (connectionResult.AltDetected)
+                    await _webhookService.SendAltDetectionAlertAsync(connectionResult);
             }
             catch (Exception ex)
             {
-                Log.Error($"Erro ao verificar jogador na API: {ex.Message}");
-            }
-        }
-
-        private async Task<PlayerConnectionResponse> RegisterPlayerConnectionAsync(Player player, string steamId)
-        {
-            try
-            {
-                // api das alt's
-                string apiUrl = $"";
-
-                var payload = new
-                {
-                    steam_id64 = steamId,
-                    player_name = player.Nickname,
-                    ip_address = player.IPAddress
-                };
-
-                var content = new StringContent(
-                    JsonConvert.SerializeObject(payload),
-                    System.Text.Encoding.UTF8,
-                    "application/json"
-                );
-
-                /// Arruma isso aqui, nao tem nem response kkkkk
-
-                //if (Config.Debug)
-                //    Log.Debug($"Erro ao registrar conexão na API: {response.StatusCode}");
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Erro ao registrar conexão: {ex.Message}");
-                return null;
+                Log.Error($"erro ao processar jogador {player.Nickname}: {ex.Message}");
             }
         }
 
         private string ExtractSteamId(string userId)
         {
             string steamId = userId.Replace("@steam", "");
-            return steamId.All(char.IsDigit) ? steamId : null;
+            return long.TryParse(steamId, out _) ? steamId : null;
         }
 
         private async Task<BanCheckResponse> FetchBanInfoAsync(string steamId)
         {
-            // api geral
-            string apiUrl = $"";
-            HttpResponseMessage response = await HttpClient.GetAsync(apiUrl);
+            string apiUrl = $"https://aliance.owlrpg.com/api/exiled/check-player?steamid={steamId}";
+            var response = await HttpClient.GetAsync(apiUrl);
 
             if (response.IsSuccessStatusCode)
             {
-                string jsonResponse = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<BanCheckResponse>(jsonResponse);
+                string json = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<BanCheckResponse>(json);
             }
 
             if (Config.Debug)
-                Log.Debug($"Erro ao consultar API: {response.StatusCode}");
+                Log.Debug($"erro na API Geral: {response.StatusCode}");
 
             return null;
         }
 
         private async Task HandleBannedPlayerAsync(Player player, BanCheckResponse banInfo, string steamId)
         {
-            Log.Warn($"Expulsando jogador banido: {player.Nickname} (SteamID: {steamId})");
-            Log.Warn($"Motivo: {banInfo.Player.Reason}");
-
             await _webhookService.SendBannedPlayerAlertAsync(player, banInfo, steamId);
-
             string kickReason = FormattingTexts.FormatKickReason(banInfo);
             player.Kick(kickReason);
         }
