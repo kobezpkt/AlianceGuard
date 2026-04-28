@@ -10,7 +10,7 @@ public class FormattingTexts
 
         return $"<color=white><b>.</b></color>\n\n" +
                $"<color=red><b>AlianceGuard</b></color>\n" +
-               $"<color=red>Seu SteamID64 foi encontrado em nossa Database com uma violacao extremamente seria.</color>\n" +
+               $"<color=red>Sua conta foi encontrado em nossa Database com uma violação.</color>\n" +
                $"<color=white>Jogador:</color> <color=white>{banInfo.Player.Username}</color>\n" +
                $"<color=white>Steam ID:</color> <color=white>{banInfo.Player.SteamId}</color>{altAccountText}\n" +
                $"<color=red>MOTIVO:</color>\n" +
