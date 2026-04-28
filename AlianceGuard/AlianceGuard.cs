@@ -139,7 +139,7 @@ namespace AlianceGuard
 
         private async Task<BanCheckResponse> FetchBanInfoAsync(string steamId)
         {
-            string apiUrl = $"https://aliance.owlrpg.com/api/exiled/check-player?steamid={steamId}";
+            string apiUrl = $"";
             var response = await HttpClient.GetAsync(apiUrl);
 
             if (response.IsSuccessStatusCode)
