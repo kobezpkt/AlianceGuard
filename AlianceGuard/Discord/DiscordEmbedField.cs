@@ -1,15 +1,16 @@
 using Newtonsoft.Json;
 
-namespace AlianceGuard.Discord;
-
-public class DiscordEmbedField
+namespace AlianceGuard.Discord
 {
-    [JsonProperty("name")]
-    public string Name { get; set; }
+    public class DiscordEmbedField
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; }
 
-    [JsonProperty("value")]
-    public string Value { get; set; }
+        [JsonProperty("value")]
+        public string Value { get; set; }
 
-    [JsonProperty("inline")]
-    public bool Inline { get; set; }
+        [JsonProperty("inline")]
+        public bool Inline { get; set; }
+    }
 }

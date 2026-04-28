@@ -1,12 +1,13 @@
 using Newtonsoft.Json;
 
-namespace AlianceGuard.Discord;
-
-public class DiscordEmbedFooter
+namespace AlianceGuard.Discord
 {
-    [JsonProperty("text")]
-    public string Text { get; set; }
+    public class DiscordEmbedFooter
+    {
+        [JsonProperty("text")]
+        public string Text { get; set; }
 
-    [JsonProperty("icon_url")]
-    public string IconUrl { get; set; }
+        [JsonProperty("icon_url")]
+        public string IconUrl { get; set; }
+    }
 }

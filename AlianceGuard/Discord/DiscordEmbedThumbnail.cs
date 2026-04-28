@@ -1,9 +1,11 @@
 using Newtonsoft.Json;
 
-namespace AlianceGuard.Discord;
-
-public class DiscordEmbedThumbnail
+namespace AlianceGuard.Discord
 {
-    [JsonProperty("url")]
-    public string Url { get; set; }
+    public class DiscordEmbedThumbnail
+    {
+        [JsonProperty("url")]
+        public string Url { get; set; }
+    }
+    
 }
