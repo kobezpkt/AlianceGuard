@@ -1,28 +1,30 @@
-﻿using Exiled.API.Interfaces;
+﻿using System.ComponentModel;
+using Exiled.API.Interfaces;
 
-namespace AlianceGuard;
-
-public class Config : IConfig
+namespace AlianceGuard
 {
-    public bool IsEnabled { get; set; } = true;
-    public bool Debug { get; set; } = false;
+    public class Config : IConfig
+    {
+        public bool IsEnabled { get; set; } = true;
 
-    #region Auto Update
-    public bool CheckForUpdates { get; set; } = true;
-    public bool AutoUpdate { get; set; } = true;
-    #endregion
+        public bool Debug { get; set; } = false;
 
-    #region Webhook
-    public bool WebhookEnabled { get; set; } = true;
-    public string WebhookUrl { get; set; } = "";
-    public string WebhookEmbedColor { get; set; } = "FF0000";
-    public string WebhookMentionRole { get; set; } = "";
-    #endregion
+        #region Auto Update
+        public bool CheckForUpdates { get; set; } = true;
+        public bool AutoUpdate { get; set; } = true;
 
-    #region Sessao (preenchido automaticamente — nao editar)
-    public string ApiKey { get; set; } = "";
-    public string SessionHmacKey { get; set; } = "";
-    public string SessionServerId { get; set; } = "";
-    public string SessionExpiresAt { get; set; } = "";
-    #endregion
+        #endregion
+
+        #region Webhook
+
+        public bool WebhookEnabled { get; set; } = true;
+
+        [Description("URL da webhook do Discord")]
+        public string WebhookUrl { get; set; } = "";
+        [Description("Cor do embed da webhook em hexadecimal (sem #). Vermelho padrao: FF0000")]
+        public string WebhookEmbedColor { get; set; } = "FF0000";
+        public string WebhookMentionRole { get; set; } = "";
+
+        #endregion
+    }
 }

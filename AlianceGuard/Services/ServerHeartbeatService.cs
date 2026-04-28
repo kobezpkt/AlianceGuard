@@ -1,4 +1,4 @@
-﻿using Exiled.API.Features;
+using Exiled.API.Features;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
