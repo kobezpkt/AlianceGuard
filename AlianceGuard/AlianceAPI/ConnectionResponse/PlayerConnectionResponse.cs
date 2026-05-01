@@ -1,20 +1,24 @@
+using AlianceGuard.AlianceAPI.ConnectionResponse;
 using Newtonsoft.Json;
 
 namespace AlianceGuard.AlianceAPI.ConnectionResponse;
 
 public class PlayerConnectionResponse
 {
-    [JsonProperty("is_banned")]
+    [JsonProperty("isBanned")]
     public bool IsBanned { get; set; }
+
+    [JsonProperty("role_ingame")]
+    public string RoleIngame { get; set; }
+
+    [JsonProperty("role_color")]
+    public string RoleColor { get; set; }
 
     [JsonProperty("alt_detected")]
     public bool AltDetected { get; set; }
 
     [JsonProperty("should_kick")]
     public bool ShouldKick { get; set; }
-
-    [JsonProperty("player")]
-    public PlayerBanInfo Player { get; set; }
 
     [JsonProperty("detection_uuid")]
     public string DetectionUuid { get; set; }
