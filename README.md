@@ -32,9 +32,9 @@ Plugin de proteção comunitária para servidores de SCP: Secret Laboratory, int
 
 ## Como Funciona
 
-```
+
 Quando um jogador entra no servidor, o plugin consulta automaticamente o painel. Se o jogador estiver banido, é expulso imediatamente e um log é enviado ao Discord caso a função de webhook estaja habilitada no servidor. Caso o sistema identifique que o jogador pode ser uma conta alternativa de alguém banido — ele também é expulso e uma notificação é enviada ao Discord para os membros da moderação aprovarem/negarem o banimento da conta. Se o jogador estiver liberado, entra normalmente no servidor, podendo receber um cargo personalizado caso tenha um configurado no painel.
-```
+
 
 ---
 
